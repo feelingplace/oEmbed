@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+<title>oEmbedブックマークレット・メーカー</title>
+<style type=text/css>
+<!--
+body{font-size:15px;margin:0px;padding:10px;font-family:"ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ", Meiryo, "ＭＳ Ｐゴシック",sans-serif;}
+a{text-decoration:none;color:#3333FF}
+textarea{width:50%;height:100px;padding:2px}
+h2{margin:0px}
+h4{margin-bottom:0px;line-height:20px}
+ul{padding-left:25px}
+
+@media screen and (max-device-width: 640px) {
+textarea{width:100%;color:#3333FF}
+}
+-->
+</style>
+
+</head>
+<body>
+<div id="inputHtml"></div>
+<h2>oEmbedブックマークレット・メーカー</h2>
+<span style="font-style:italic;font-size:12px">Last updated: Jul 19, 2015</span>
+<ul>
+<li>メディア共有サイトのコンテンツを簡単に埋め込むことができるように、指定フォーマットに整形して出力するブックマークレットです。</li>
+<li>oEmbedブックマークレットの基本的な概要は<a href="https://github.com/feelingplace/oEmbed" target="blank">こちらへ</a>。</li>
+</ul>
+<form>
+<input type="button" value="設定を保存" id="buttonSave" onclick="javascript:save_config();">
+<input type="button" value="設定をロード" id="buttonLoad" onclick="javascript:bmClear();load_config();">
+<input type="button" value="設定を削除" id="buttonLoad" onclick="javascript:remove_config();">
+</form>
+<h4>設定情報を選択してください（必須）</h4>
+<form name="form1">
+<select name="sel_template" onchange="javascript:loadFmt();bmClear();">
+<option value="">（書式テンプレート）</option>
+</select>
+
+<input type="hidden" id="bmn" value="oEmbedブックマークレット">
+
+<select id="out" onchange="javascript:bmClear();">
+<option value=''>（出力先）</option>
+<option value='preview'>プレビュー表示</option>
+<option value='popup'>ポップアップ</option>
+<option value='pop-textforce'>ポップアップ→Textforce</option>
+<option value='textforce'>Textforce</option>
+<option value='safari-textforce'>Textforce→Safari</option>
+<option value='draftpad'>DraftPad</option>
+<option value='slpro'>するぷろ</option>
+<option value='moblogger'>Moblogger</option>
+<option value='moblogger-app'>Moblogger(追記)</option>
+<option value='moblogger-pb'>Moblogger(コピー)</option>
+<option value='myeditor'>MyEditor</option>
+<option value='myeditor-cursor'>MyEditor(カーソル)</option>
+<option value='rowline'>Rowline</option>
+<option value='msth'>TextHandler</option>
+<option value='thumbedit'>ThumbEdit(送信)</option>
+<option value='thumbedit-insert'>ThumbEdit(追記)</option>
+<option value='presssync'>PressSync Pro</option>
+<option value='textwell'>Textwell</option>
+<option value='hatenablog'>はてなブログ（新規投稿）</option>
+<option value='drafts'>Drafts</option>
+<option value='drafts4'>Drafts4</option>
+<option value='ameeditor'>AmeEditor</option>
+<option value='slpro-x'>SLPRO X</option>
+</select>
+
+<input type="hidden" id="out" value="preview">
+
+<h4>動画およびサムネイルの横幅</h4>
+<input type="text" style="text-align:right;" size="10" id="scs" value=0 onChange="javascript:bmClear();">px<br>
+
+<h4>テンプレートを直接カスタマイズできます（但し ' は禁止文字）</h4>
+<textarea id="code" onchange="javascript:bmClear();"></textarea><p>
+<div id="loaded"></div>
+<input type="button" value="Bookmarkletを生成" id="buttonShow" onclick="javascript:bmCreate();">
+</form>
+
+<script type="text/javascript">
+<!--
+
+
+var d = document,
+    w = window;
+
+var db = {
+    set: function(key, obj) {
+        w.localStorage.setItem(key, JSON.stringify(obj));
+    },
+    get: function(key) {
+        return JSON.parse(w.localStorage.getItem(key));
+    },
+    clear: function() {
+        w.localStorage.clear();
+    }
+};
+
+var storage = db;
+
+function load_config() {
+    if (!storage.get("ithtml_scs")) {
+      alert("設定が保存されていません");
+      return;
+    }
+
+    var config_scs = storage.get("ithtml_scs");
+    var config_out = storage.get("ithtml_out");
+    var config_code = storage.get("ithtml_code");
+
+    d.getElementById("scs").value = config_scs;
+    d.getElementById("out").value = config_out;
+    d.getElementById("code").value = config_code;
+    d.getElementById("loaded").innerHTML = '<p style="font-size:13px;color:#0000ff">'
+            + config_saved
+            +'に検索対象"'
+            + config_bmn
+            + '"として保存された設定をロードしました</p>';
+}
+
+function save_config() {
+    var now = new Date();
+    var dt = now.toLocaleTimeString();
+    var y = now.getFullYear();
+    var m = now.getMonth() + 1;
+    var dd = now.getDate();
+    saved_date = y+"."+m+"."+dd+" "+dt;
+
+    storage.set("ithtml_bmn", d.getElementById("bmn").value);
+    storage.set("ithtml_saved", saved_date);
+    storage.set("ithtml_scs", d.getElementById("scs").value);
+    storage.set("ithtml_out", d.getElementById("out").value);
+    storage.set("ithtml_code", d.getElementById("code").value);
+    alert("設定を保存しました");
+};
+
+function bmCreate() {
+    var d = document;
+
+    // エラーハンドリング
+    if (d.getElementById("out").value== "") {
+        alert("出力方法は必ず選択してください");
+        return;
+    }
+
+    if (!d.getElementById("code").value) {
+        alert("書式テンプレートの選択が必要です!!");
+        return;
+    }
+
+    // Bookmarklet（本体と引数定義）
+    var bmBase = "" + document.location;
+    {
+        var pos = bmBase.lastIndexOf('/');
+        if (pos > 0) {
+            bmBase = bmBase.slice(0, pos + 1);
+        }
+        bmBase = bmBase + 'oembed.js';
+    }
+    var bmlt = "javascript:(function(){var d=document,e=d.createElement('script'),url='"
+            + bmBase
+            + "';if(!url.match(/\\?/))url+='?t='+(new%20Date()).getTime();"
+            + "e.out='%out%';e.scs='%scs%';e.fmt='%fmt%';"
+            + "e.charset='utf-8';e.src=url;e.id='bmlt';d.body.appendChild(e);})();";
+
+    // フォームの値をセット
+    bmlt = bmlt.replace("%out%", d.getElementById("out").value);
+    bmlt = bmlt.replace("%scs%", d.getElementById("scs").value);
+    bmlt = bmlt.replace("%fmt%", encodeURIComponent(d.getElementById("code").value));
+
+    // Bookmarkletブックマーク表示
+    var html =
+    "<p><strong>ブックマーク名は登録後に変更できます</strong><br>"
+    + '<a href="' + bmlt + '">' + d.getElementById("bmn").value + '</a> - 実行またはPC用ブックマーク<br>'
+    + '<a target=_blank href="http://www.feelingplace.com/etc/?' + bmlt + '">'
+    + d.getElementById("bmn").value + '</a> - iOSブックマーク登録用</br>'
+    + '<strong style="font-size: 85%;color: red;">登録後に動かない場合、登録内容を編集して以下を上書きして下さい!!</strong><br>'
+    + '<textarea style="width:410px;height:100px;padding:2px;">' + bmlt + '</textarea><br>'
+    + '<strong style="font-size: 85%;color: red;">Chromeで登録すると動かないんですヽ(;´Д｀)ﾉ</strong><br>'
+    + "<br>";
+    d.getElementById("bmHtml").innerHTML = html;
+}
+
+function bmClear() {
+    var d = document;
+    d.getElementById("bmHtml").innerHTML = "";
+    d.getElementById("loaded").innerHTML = "";
+}
+
+function remove_config() {
+    if (!storage.get("ithtml_scs")) {
+        alert("設定が保存されていません");
+    } else {
+        var chk = confirm("削除しますか？");
+        if (chk) {
+            storage.clear();
+        }
+    }
+}
+
+function clickOutr(value) {
+    var d = document;
+    d.getElementById("out").value = value;
+}
+
+function loadFmt() {
+    var temp = form1.sel_template.value;
+
+//Template
+        if (temp == "動画のみ")
+            def_temp = '${html}';
+        if (temp == "サムネイルのみ")
+            def_temp = '${thumbnail}';
+        if (temp == "動画とサムネイル")
+            def_temp = '${thumbnail}${html}';
+
+    // 選択された書式テンプレートをソース表示
+    d.getElementById("code").value = def_temp;
+}
+
+var template  = new Array("動画のみ", "サムネイルのみ", "動画とサムネイル");
+
+createSelection(form1.elements['sel_template'], "（書式テンプレート）", template, template);
+
+function addSelOption(selObj, myValue, myText) {
+    selObj.length++;
+    selObj.options[selObj.length - 1].value = myValue ;
+    selObj.options[selObj.length - 1].text  = myText;
+}
+
+function createSelection(selObj, headings, aryValue, aryText) {
+    selObj.length = 0;
+    addSelOption(selObj, headings, headings);
+    for (var i=0; i < aryValue.length; i++) {
+        addSelOption(selObj, aryValue[i], aryText[i]);
+    }
+}
+
+//-->
+</script>
+
+<div id="bmHtml"></div>
+</body>
+</html>
