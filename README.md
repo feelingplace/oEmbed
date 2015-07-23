@@ -8,11 +8,12 @@ oEmbedブックマークレット はメディア共有サイトのコンテン�
 このツールは[oEmbed](http://oembed.com)を利用しています。
 
 対応サイト
-[YouTube](http://www.youtube.com/)
-[Vimeo](http://vimeo.com/)
-[Dailymotion](http://www.dailymotion.com/)
-[SlideShare](http://www.slideshare.net/)
-[Instagram](http://instagram.com/)
+
+* [YouTube](http://www.youtube.com/)
+* [Vimeo](http://vimeo.com/)
+* [Dailymotion](http://www.dailymotion.com/)
+* [SlideShare](http://www.slideshare.net/)
+* [Instagram](http://instagram.com/)
 
 基本的な機能
 ------------
