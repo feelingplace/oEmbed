@@ -25,7 +25,7 @@ textarea{width:100%;color:#3333FF}
 <body>
 <div id="inputHtml"></div>
 <h2>oEmbedブックマークレット・メーカー</h2>
-<span style="font-style:italic;font-size:12px">Last updated: Jul 19, 2015</span>
+<span style="font-style:italic;font-size:12px">Last updated: Jul 25, 2015</span>
 <ul>
 <li>メディア共有サイトのコンテンツを簡単に埋め込むことができるように、指定フォーマットに整形して出力するブックマークレットです。</li>
 <li>oEmbedブックマークレットの基本的な概要は<a href="https://github.com/feelingplace/oEmbed" target="blank">こちらへ</a>。</li>
@@ -72,7 +72,7 @@ textarea{width:100%;color:#3333FF}
 
 <input type="hidden" id="out" value="preview">
 
-<h4>動画およびサムネイルの横幅</h4>
+<h4>メディアおよびサムネイルの横幅</h4>
 <input type="text" style="text-align:right;" size="10" id="scs" value=0 onChange="javascript:bmClear();">px<br>
 
 <h4>テンプレートを直接カスタマイズできます（但し ' は禁止文字）</h4>
@@ -211,18 +211,18 @@ function loadFmt() {
     var temp = form1.sel_template.value;
 
 //Template
-        if (temp == "動画のみ")
+        if (temp == "メディアのみ")
             def_temp = '${html}';
         if (temp == "サムネイルのみ")
             def_temp = '${thumbnail}';
-        if (temp == "動画とサムネイル")
+        if (temp == "メディアとサムネイル")
             def_temp = '${thumbnail}${html}';
 
     // 選択された書式テンプレートをソース表示
     d.getElementById("code").value = def_temp;
 }
 
-var template  = new Array("動画のみ", "サムネイルのみ", "動画とサムネイル");
+var template  = new Array("メディアのみ", "サムネイルのみ", "メディアとサムネイル");
 
 createSelection(form1.elements['sel_template'], "（書式テンプレート）", template, template);
 

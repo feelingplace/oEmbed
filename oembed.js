@@ -63,11 +63,11 @@
         switch (true) {
             case /youtu(.be|be.com)/.test(u):
             case /vimeo/.test(u):
-                // case /ted/.test(u):
-                case /slideshare/.test(u):
-                // case /ustream/.test(u):
+            case /slideshare/.test(u):
             case /dailymotion/.test(u):
             case /insta(gram.com|gr.am)/.test(u):
+            case /twitter/.test(u):
+            case /flic(kr.com|.kr)/.test(u):
                 step = 2;
                 break;
             default:
@@ -108,6 +108,11 @@
                 provider = "Instagram";
                 step = 3;
                 break;
+            case /twitter/.test(u):
+                endpointURL = "https://api.twitter.com/1/statuses/oembed.json?url=" + u + "&maxwidth=" + scs + "&format=json";
+                provider = "Twitter";
+                step = 3;
+                break;
             default:
                 alert("Not Found ...");
                 step = 5;
@@ -133,7 +138,7 @@
                 movieHeight = data.height;
                 movieHtml = data.html;
                 //InstagramとSlideShareはテンプレートにサムネイルがあっても出力しない。
-                if (provider == "Instagram" || "SlideShare") {
+                if (provider == "Instagram" || "SlideShare" || "Twitter") {
                     movieThumbnail = "";
                 } else {
                     movieThumbnail = '<img src="' + data.thumbnail_url + '" width="' + movieWidth + '">';
