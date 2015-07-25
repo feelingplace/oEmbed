@@ -8,11 +8,13 @@ oEmbedブックマークレット はメディア共有サイトのコンテン�
 このツールは[oEmbed](http://oembed.com)を利用しています。
 
 対応サイト
-[YouTube](http://www.youtube.com/)
-[Vimeo](http://vimeo.com/)
-[Dailymotion](http://www.dailymotion.com/)
-[SlideShare](http://www.slideshare.net/)
-[Instagram](http://instagram.com/)
+
+* [YouTube](http://www.youtube.com/)
+* [Vimeo](http://vimeo.com/)
+* [Dailymotion](http://www.dailymotion.com/)
+* [SlideShare](http://www.slideshare.net/)
+* [Instagram](http://instagram.com/)
+* [Twitter](https://twitter.com/)
 
 基本的な機能
 ------------
@@ -47,14 +49,15 @@ oEmbedブックマークレット はメディア共有サイトのコンテン�
 名称                     | 予約語
 ------------------------|-------------------
 メディア（動画,画像など）  | ${html}
-動画のサムネイル          | ${thumbnail}
+メディアのサムネイル          | ${thumbnail}
 
 既知の問題
 ----------
- 1. 埋め込み可能な動画やスライド、画像は埋め込み許可がされているものに限ります。許可されていないものはHTMLが生成されても再生できません。
- 2. SlideShare および Instagram は埋め込みリンクのみ生成可能です。
- 3. SlideShare は出力サイズの変更ができません。
- 4. その他に既知の問題がある場合はIssuesに記載しています。
+ 1. YouTube の HTML は [YouTube 埋め込みプレーヤーとプレーヤーのパラメータ   |   YouTube IFrame API   |   Google Developers](https://developers.google.com/youtube/player_parameters#Manual_IFrame_Embeds) に基づいて生成しています。またサムネイルは [How do I get a YouTube video thumbnail from the YouTube API? - Stack Overflow](http://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api) を参考に hqdefault.jpg を生成しています。
+ 2. 埋め込み可能な動画やスライド、画像は埋め込み許可がされているものに限ります。許可されていないものは HTML が生成されても再生できません。
+ 3. SlideShare, Instagram, Twitter は埋め込み用HTMLコードのみ生成可能です。
+ 4. SlideShare は出力サイズの変更ができません。
+ 5. その他に既知の問題がある場合は Issues に記載しています。
 
 免責事項
 --------------------------------
