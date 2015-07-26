@@ -138,7 +138,7 @@
                 movieHeight = data.height;
                 movieHtml = data.html;
                 //InstagramとSlideShareはテンプレートにサムネイルがあっても出力しない。
-                if (provider == "Instagram" || "SlideShare" || "Twitter") {
+                if (provider == "Instagram" || provider == "SlideShare" || provider == "Twitter") {
                     movieThumbnail = "";
                 } else {
                     movieThumbnail = '<img src="' + data.thumbnail_url + '" width="' + movieWidth + '">';
