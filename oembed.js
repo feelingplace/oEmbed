@@ -6,8 +6,10 @@
     var json = {},
         jsonCtr = 0,
         videoId = "";
-    //YoutubeのURLからIDだけ抜き出す正規表現
-    var youtubeId = /youtu(.be\/|be.com\/.*v=)([\d\w-]+).*/;
+    //YoutubeのURLからIDだけ取り出す正規表現
+    var youtubeIDmatch = /youtu(.be\/|be.com\/.*v=)([\d\w-]+).*/;
+    //TwitterのURLからIDだけ取り出す正規表現
+    var twitterIDmatch = /.*\/([\d]+)/;
     var u = location.href;
     // 親JSからパラメータを取得
     var script = d.getElementById("bmlt");
@@ -61,13 +63,13 @@
 
     function checkURL() {
         switch (true) {
-            case /youtu(.be|be.com)/.test(u):
+            case /youtu(\.be|be\.com)/.test(u):
             case /vimeo/.test(u):
             case /slideshare/.test(u):
             case /dailymotion/.test(u):
-            case /insta(gram.com|gr.am)/.test(u):
+            case /insta(gram\.com|gr\.am)/.test(u):
             case /twitter/.test(u):
-            case /flic(kr.com|.kr)/.test(u):
+            case /flic(kr\.com|\.kr)/.test(u):
                 step = 2;
                 break;
             default:
@@ -79,9 +81,9 @@
 
     function createEndpoint() {
         switch (true) {
-            case /youtu(.be|be.com)/.test(u):
-                var result = u.match(youtubeId);
-                videoId = result[2];
+            case /youtu(\.be|be\.com)/.test(u):
+                var result = u.match(youtubeIDmatch);
+                videoID = result[2];
                 provider = "YouTube";
                 step = 3;
                 break;
@@ -91,6 +93,9 @@
                 step = 3;
                 break;
             case /slideshare/.test(u):
+                if (u.match("mobile/")) {
+                    u = u.replace("mobile/", "");
+                }
                 endpointURL = "http://www.slideshare.net/api/oembed/2?url=" + u + "&format=jsonp&maxwidth=" + scs;
                 provider = "SlideShare";
                 step = 3;
@@ -109,7 +114,9 @@
                 step = 3;
                 break;
             case /twitter/.test(u):
-                endpointURL = "https://api.twitter.com/1/statuses/oembed.json?url=" + u + "&maxwidth=" + scs + "&format=json";
+            var result = u.match(twitterIDmatch);
+                tweetID = result[1];
+                endpointURL = "https://api.twitter.com/1/statuses/oembed.json?id=" + tweetID + "&maxwidth=" + scs + "&format=json";
                 provider = "Twitter";
                 step = 3;
                 break;
@@ -137,7 +144,7 @@
                 movieWidth = data.width;
                 movieHeight = data.height;
                 movieHtml = data.html;
-                //InstagramとSlideShareはテンプレートにサムネイルがあっても出力しない。
+                //Instagram,SlideShare,Twitterはテンプレートにサムネイルがあっても出力しない。
                 if (provider == "Instagram" || provider == "SlideShare" || provider == "Twitter") {
                     movieThumbnail = "";
                 } else {
@@ -154,8 +161,8 @@
             width = scs;
             height = (9 / 16) * width;
             height = Math.round(height);
-            thumbnail_url = '<img src="https://i.ytimg.com/vi/' + videoId + '/hqdefault.jpg" width="' + width + '">';
-            html = '<iframe width="' + width + '" height="' + height + '" src="https://www.youtube.com/embed/' + videoId + '" frameborder="0" allowfullscreen></iframe>';
+            thumbnail_url = '<img src="https://i.ytimg.com/vi/' + videoID + '/hqdefault.jpg" width="' + width + '">';
+            html = '<iframe width="' + width + '" height="' + height + '" src="https://www.youtube.com/embed/' + videoID + '" frameborder="0" allowfullscreen></iframe>';
             movieWidth = width;
             movieHtml = html;
             movieThumbnail = thumbnail_url;
