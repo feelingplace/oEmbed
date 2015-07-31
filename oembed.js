@@ -67,15 +67,9 @@
             case /vimeo/.test(u):
             case /slideshare/.test(u):
             case /dailymotion/.test(u):
-<<<<<<< HEAD
-            case /insta(gram.com|gr.am)/.test(u):
-            case /twitter/.test(u):
-            case /flic(kr.com|.kr)/.test(u):
-=======
             case /insta(gram\.com|gr\.am)/.test(u):
             case /twitter/.test(u):
             case /flic(kr\.com|\.kr)/.test(u):
->>>>>>> master
                 step = 2;
                 break;
             default:
@@ -120,13 +114,9 @@
                 step = 3;
                 break;
             case /twitter/.test(u):
-<<<<<<< HEAD
-                endpointURL = "https://api.twitter.com/1/statuses/oembed.json?url=" + u + "&maxwidth=" + scs + "&format=json";
-=======
             var result = u.match(twitterIDmatch);
                 tweetID = result[1];
                 endpointURL = "https://api.twitter.com/1/statuses/oembed.json?id=" + tweetID + "&maxwidth=" + scs + "&format=json";
->>>>>>> master
                 provider = "Twitter";
                 step = 3;
                 break;
@@ -154,11 +144,7 @@
                 movieWidth = data.width;
                 movieHeight = data.height;
                 movieHtml = data.html;
-<<<<<<< HEAD
-                //InstagramとSlideShareはテンプレートにサムネイルがあっても出力しない。
-=======
                 //Instagram,SlideShare,Twitterはテンプレートにサムネイルがあっても出力しない。
->>>>>>> master
                 if (provider == "Instagram" || provider == "SlideShare" || provider == "Twitter") {
                     movieThumbnail = "";
                 } else {
