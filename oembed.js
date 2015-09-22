@@ -17,8 +17,12 @@
         scs = script.scs,
         provider = "",
         //YouTube用データ配列
-        data = {"movieWidth":"","movieHtml":"","movieThumbnail":""};
-        fmt = decodeURIComponent(script.fmt);
+        data = {
+            "movieWidth": "",
+            "movieHtml": "",
+            "movieThumbnail": ""
+        };
+    fmt = decodeURIComponent(script.fmt);
 
     // bookmarkletの予約語（2個）
     var bmAry = ['html', 'thumbnail'];
@@ -54,12 +58,12 @@
         },
         100);
 
-        function cleanup() {
-            while (d.getElementById("bmlt"))
-                d.getElementById("bmlt").parentNode.removeChild(d.getElementById("bmlt"));
-            clearInterval(timerId);
-            timerId = null;
-        }
+    function cleanup() {
+        while (d.getElementById("bmlt"))
+            d.getElementById("bmlt").parentNode.removeChild(d.getElementById("bmlt"));
+        clearInterval(timerId);
+        timerId = null;
+    }
 
     function checkURL() {
         switch (true) {
@@ -114,12 +118,13 @@
                 step = 3;
                 break;
             case /twitter/.test(u):
-            var result = u.match(twitterIDmatch);
+                var result = u.match(twitterIDmatch);
                 tweetID = result[1];
                 endpointURL = "https://api.twitter.com/1/statuses/oembed.json?id=" + tweetID + "&maxwidth=" + scs + "&format=json";
                 provider = "Twitter";
                 step = 3;
                 break;
+            case /flic(kr\.com|\.kr)/.test(u):
             default:
                 alert("Not Found ...");
                 step = 5;
@@ -141,22 +146,22 @@
             s.id = "getData";
             d.body.appendChild(s);
             w.result = function(data) {
-                movieWidth = data.width;
-                movieHeight = data.height;
-                movieHtml = data.html;
-                //Instagram,SlideShare,Twitterはテンプレートにサムネイルがあっても出力しない。
-                if (provider == "Instagram" || provider == "SlideShare" || provider == "Twitter") {
-                    movieThumbnail = "";
-                } else {
-                    movieThumbnail = '<img src="' + data.thumbnail_url + '" width="' + movieWidth + '">';
+                    movieWidth = data.width;
+                    movieHeight = data.height;
+                    movieHtml = data.html;
+                    //Instagram,SlideShare,Twitterはテンプレートにサムネイルがあっても出力しない。
+                    if (provider == "Instagram" || provider == "SlideShare" || provider == "Twitter") {
+                        movieThumbnail = "";
+                    } else {
+                        movieThumbnail = '<img src="' + data.thumbnail_url + '" width="' + movieWidth + '">';
+                    }
+                    jsonCtr = 1;
+                    for (var i = 0; i < jsonCtr; i++) {
+                        json[i] = data[i];
+                    }
+                    step = 4;
                 }
-                jsonCtr = 1;
-                for (var i = 0; i < jsonCtr; i++) {
-                    json[i] = data[i];
-                }
-                step = 4;
-            }
-            //YouTubeの場合
+                //YouTubeの場合
         } else {
             width = scs;
             height = (9 / 16) * width;
